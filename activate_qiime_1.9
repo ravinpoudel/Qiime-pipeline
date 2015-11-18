@@ -1,0 +1,165 @@
+# This file must be used with "source bin/activate" *from bash*
+# you cannot run it directly
+
+#This file was original used to set up the python 2.7 environment
+#
+#Edited by Richard Wolfe to set up the python 2.7 and qiime enveronment
+#
+#
+
+
+#deactivate () {
+deactivate_qiime () {
+    unset pydoc
+
+    #prints a message when the user exits the Qiime environment
+    #echo "*** Qiime 1.9  environment has been deactivated ***"
+
+
+    #I added to unset the env variables set by qiime
+    #maybe the pythonpath variable could be saved below to oldpythonpath
+    #   and then reset if it exists
+    #unset PYTHONPATH
+    #unset PYRO_LOOKUP_FILE
+    #unset QIIME_CONFIG_FP
+    #unset SEQ_LOOKUP_FILE
+    #unset SOURCETRACKER_PATH
+    #unset RDP_JAR_PATH
+
+    # reset old environment variables
+    if [ -n "$_OLD_VIRTUAL_PATH" ] ; then
+        PATH="$_OLD_VIRTUAL_PATH"
+        export PATH
+        unset _OLD_VIRTUAL_PATH
+    fi
+    if [ -n "$_OLD_VIRTUAL_PYTHONHOME" ] ; then
+        PYTHONHOME="$_OLD_VIRTUAL_PYTHONHOME"
+        export PYTHONHOME
+        unset _OLD_VIRTUAL_PYTHONHOME
+    fi
+
+    # This should detect bash and zsh, which have a hash command that must
+    # be called to get it to forget past commands.  Without forgetting
+    # past commands the $PATH changes we made may not be respected
+    if [ -n "$BASH" -o -n "$ZSH_VERSION" ] ; then
+        hash -r 2>/dev/null
+    fi
+
+    if [ -n "$_OLD_VIRTUAL_PS1" ] ; then
+        PS1="$_OLD_VIRTUAL_PS1"
+        export PS1
+        unset _OLD_VIRTUAL_PS1
+    fi
+
+    unset VIRTUAL_ENV
+    if [ ! "$1" = "nondestructive" ] ; then
+    # Self destruct!
+        #prints a message when the user exits the Qiime environment
+        echo "*** Qiime 1.9  environment has been deactivated ***"
+
+        #I added to unset the env variables set by qiime
+        #maybe the pythonpath variable could be saved below to oldpythonpath
+        #   and then reset if it exists
+        unset PYTHONPATH
+        unset PYRO_LOOKUP_FILE
+        unset QIIME_CONFIG_FP
+        unset SEQ_LOOKUP_FILE
+        unset SOURCETRACKER_PATH
+        unset RDP_JAR_PATH
+        unset BLASTMAT
+
+        #unset -f deactivate
+        unset -f deactivate_qiime
+    fi
+}
+
+#  I added paramater so could select the database when it starts
+#
+#   Ex: /opt/Qiime/activate.sh SILVA
+#     -will point to the silva dadabase
+#
+
+#make sure a variable
+if [ -z $1 ]
+then
+  echo "You did not supply 1 attribute"
+  echo "Try /opt/Qiime_1.9/activate_qiime_1.9 SILVA"
+  #use return instead of exit because this is source
+  return
+fi
+
+#check variable 1
+if [ "$1" == "SILVA" ]
+then
+   echo "*** Qiime 1.9 will use SILVA database ***"
+   export QIIME_CONFIG_FP=/opt/Qiime_1.9/qiime_config_SILVA
+elif [ "$1" == "GG_13_8" ]
+then
+   echo "*** Qiime 1.9 will use Greengenes database GG_13_8 ***"
+   export QIIME_CONFIG_FP=/opt/Qiime_1.9/qiime_config
+elif [ "$1" == "GG_13_5" ]
+then
+   echo "*** Qiime 1.9 will use Greengenes database GG_13_5 ***"
+   export QIIME_CONFIG_FP=/opt/Qiime_1.9/qiime_config_GG_13_5
+else
+   echo "ERROR ... Variable 1 must be SILVA or GG_13_8 or GG_13_5"
+   #exit 1
+   return
+fi
+
+#end added for database variable
+
+
+
+
+# unset irrelevant variables
+#deactivate nondestructive
+#i changed
+deactivate_qiime nondestructive
+
+VIRTUAL_ENV="/opt/python2.7_environment"
+export VIRTUAL_ENV
+
+_OLD_VIRTUAL_PATH="$PATH"
+PATH="$VIRTUAL_ENV/bin:$PATH"
+export PATH
+
+# unset PYTHONHOME if set
+# this will fail if PYTHONHOME is set to the empty string (which is bad anyway)
+# could use `if (set -u; : $PYTHONHOME) ;` in bash
+if [ -n "$PYTHONHOME" ] ; then
+    _OLD_VIRTUAL_PYTHONHOME="$PYTHONHOME"
+    unset PYTHONHOME
+fi
+
+if [ -z "$VIRTUAL_ENV_DISABLE_PROMPT" ] ; then
+    _OLD_VIRTUAL_PS1="$PS1"
+    if [ "x" != x ] ; then
+        PS1="$PS1"
+    else
+    if [ "`basename \"$VIRTUAL_ENV\"`" = "__" ] ; then
+        # special case for Aspen magic directories
+        # see http://www.zetadev.com/software/aspen/
+        PS1="[`basename \`dirname \"$VIRTUAL_ENV\"\``] $PS1"
+    else
+        PS1="(`basename \"$VIRTUAL_ENV\"`)$PS1"
+    fi
+    fi
+    export PS1
+fi
+
+alias pydoc="python -m pydoc"
+
+# This should detect bash and zsh, which have a hash command that must
+# be called to get it to forget past commands.  Without forgetting
+# past commands the $PATH changes we made may not be respected
+if [ -n "$BASH" -o -n "$ZSH_VERSION" ] ; then
+    hash -r 2>/dev/null
+fi
+
+
+#I added to set up the qiime environment
+source /opt/Qiime_1.9/activate.sh
+
+#I added so a message appears when this script is run
+echo "*** Qiime 1.9 environment has been activated ***"
