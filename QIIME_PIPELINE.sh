@@ -2,6 +2,8 @@
 
 #  QIIME_PIPELINE.sh
 #
+#  /ORG-Data/scripts/bin/Phylogeny_Protpipe/QIIME_PIPELINE.sh
+#
 # script by Richard Wolfe
 #
 #   $1 = the unzipped barcode file or START_STEP_2
@@ -240,12 +242,12 @@ then
    echo "Running split_libraries.py" >> $logfile
    #echo " " >> $logfile
    #cd STEP1_OUT
-   split_libraries_fastq.py -i fastqjoin.join.fastq -b fastqjoin.join_barcodes.fastq --rev_comp_mapping_barcodes -o STEP2_OUT/ -m $4  -q 19
+   split_libraries_fastq.py -i fastqjoin.join.fastq -b fastqjoin.join_barcodes.fastq --rev_comp_mapping_barcodes -o STEP2_OUT/ -m $4  -q 19 --store_demultiplexed_fastq
    cd STEP2_OUT
 
 else
     #starting at step 2
-    split_libraries_fastq.py -i $2 -b $3 --rev_comp_mapping_barcodes -o STEP2_OUT/ -m $4  -q 19
+    split_libraries_fastq.py -i $2 -b $3 --rev_comp_mapping_barcodes -o STEP2_OUT/ -m $4  -q 19 --store_demultiplexed_fastq
     cd STEP2_OUT
 fi
 
@@ -312,6 +314,17 @@ echo "     taxonomy_summaries/otu_table_mc2_w_tax_L7_with_accession.txt ($cmd_ou
 cmd_out=$( wc -l < rep_set_with_taxonomy.fna )
 echo "     rep_set_with_taxonomy.fna ($cmd_out lines)" >> $logfile
 
+#added per lindsey
+
+python /ORG-Data/scripts/wrapper_filter_otus_from_otu_table.py -i otu_table_mc2_w_tax.biom -o percent_filtered_otu_table_mc2_w_tax.biom -n 10 -p 25
+
+#biom convert -i otu_table_mc2_w_tax.biom -o otu_table_mc2_w_tax.txt --to-tsv --header-key taxonomy
+biom convert -i percent_filtered_otu_table_mc2_w_tax.biom -o percent_filtered_otu_table_mc2_w_tax.txt --to-tsv --header-key taxonomy
+
+python /ORG-Data/scripts/calculate_relative_abundance.py -i percent_filtered_otu_table_mc2_w_tax.txt -o percent_calculate_relative_abundance_output.txt
+
+echo "percent_calculate_relative_abundance_output.txt file made"
+echo "percent_calculate_relative_abundance_output.txt file made" >> $logfile
 
 echo " " >> $logfile
 echo "Qiime script has completed" >> $logfile
